@@ -1,6 +1,7 @@
 package com.ntropia.filmico.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ntropia.filmico.R;
+import com.ntropia.filmico.activities.EntityViewActivity;
 import com.ntropia.filmico.models.Movie;
 import com.ntropia.filmico.utilities.ApiRequester;
 import com.ntropia.filmico.utilities.UrlBulder;
@@ -33,7 +35,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         LayoutInflater li = LayoutInflater.from(getContext());
         View movieRowView = li.inflate(R.layout.movie_list_row, parent, false);
 
-        Movie movie = getItem(position);
+        final Movie movie = getItem(position);
         if (movie != null) {
             TextView movieTitle = (TextView) movieRowView.findViewById(R.id.movieListRowTitle);
             TextView movieScore = (TextView) movieRowView.findViewById(R.id.movieListRowScore);
@@ -48,6 +50,15 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
             movieImage.setTag(movie.posterUrl);
 
             new RetrieveImageTask().execute(movieImage);
+
+            movieRowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EntityViewActivity.class);
+                    intent.putExtra("entityRefId", movie.refId);
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
 
         return movieRowView;

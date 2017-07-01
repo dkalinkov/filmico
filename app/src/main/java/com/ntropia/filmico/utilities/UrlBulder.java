@@ -5,10 +5,19 @@ import java.util.Map;
 public class UrlBulder {
 
     public static String generateUrlAddress(String apiURL, String apiKey, String apiResource, Map<String, String> optionalParams) {
+        return generateUrlAddress(apiURL, apiKey, apiResource, 0, "", optionalParams);
+    }
+
+    public static String generateUrlAddress(String apiURL, String apiKey, String apiResource,
+                                            int entityId, String additionalResource,
+                                            Map<String, String> optionalParams) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(apiURL);
         sb.append(apiResource);
+
+        if (entityId != 0) sb.append("/" + entityId);
+        if (!additionalResource.isEmpty()) sb.append("/" + additionalResource);
 
         sb.append("?");
         sb.append("api_key=" + apiKey);

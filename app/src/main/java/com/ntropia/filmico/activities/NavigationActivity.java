@@ -100,8 +100,12 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.movies_popular) {
-            this.loadPopularMoviesFragment();
+        if (id == R.id.movies_now_playing) {
+            this.loadMoviesFragment(R.string.api_movies_now_playing);
+        } else if (id == R.id.movies_popular) {
+            this.loadMoviesFragment(R.string.api_movies_popular);
+        } else if (id == R.id.movies_top_rated) {
+            this.loadMoviesFragment((R.string.api_movies_top_rated));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -109,7 +113,7 @@ public class NavigationActivity extends AppCompatActivity
         return true;
     }
 
-    private void loadPopularMoviesFragment() {
+    private void loadMoviesFragment(int actionId) {
         EntityListFragment lsf = EntityListFragment.newInstance();
         startProgressBarAnimation();
 
@@ -121,7 +125,7 @@ public class NavigationActivity extends AppCompatActivity
 
         String url = UrlBulder.generateUrlAddress(getString(R.string.api_url),
                 getString(R.string.api_key),
-                getString(R.string.api_movies_popular),
+                getString(actionId),
                 null);
 
         new RetrieveEntitiesListTask().execute(url);

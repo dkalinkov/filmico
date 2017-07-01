@@ -18,6 +18,11 @@
                     android:id="@+id/movies_popular"
                     android:icon="@drawable/ic_star_circle"
                     android:title="Popular"/>
+
+                <item
+                    android:id="@+id/movies_top_rated"
+                    android:icon="@drawable/ic_insert_chart_black_24dp"
+                    android:title="Top Rated" />
             </menu>
         </item>
     </group>
