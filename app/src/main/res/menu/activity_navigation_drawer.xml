@@ -2,14 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/search_bar"
+            android:icon="@drawable/ic_magnify"
+            android:title="Search" />
+
         <item android:title="Movies">
             <menu>
                 <item
-                    android:id="@+id/movies_popular"
-                    android:title="Popular"/>
-                <item
                     android:id="@+id/movies_now_playing"
+                    android:icon="@drawable/ic_movie"
                     android:title="Now Playing" />
+
+                <item
+                    android:id="@+id/movies_popular"
+                    android:icon="@drawable/ic_star_circle"
+                    android:title="Popular"/>
             </menu>
         </item>
     </group>
