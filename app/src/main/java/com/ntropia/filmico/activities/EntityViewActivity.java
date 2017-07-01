@@ -1,5 +1,6 @@
 package com.ntropia.filmico.activities;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ntropia.filmico.R;
 import com.ntropia.filmico.models.MovieDetails;
@@ -67,8 +69,47 @@ public class EntityViewActivity extends AppCompatActivity {
     }
 
     private void onLikeClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        try {
+            String spKey = getString(R.string.app_shared_pref_key);
+            SharedPreferences sp = getBaseContext().getSharedPreferences(spKey, getBaseContext().MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+
+            String storedEntity = sp.getString(_movieDetails.refId, "");
+            if (storedEntity.isEmpty()) {
+                editor.putString(_movieDetails.refId, _movieDetails.title);
+                editor.commit();
+
+                Snackbar.make(view, "Added to liked!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else {
+                editor.remove(_movieDetails.refId);
+                editor.commit();
+
+                Snackbar.make(view, "Removed from liked!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        } catch (Exception ex) {
+            Log.d("Error", ex.getMessage(), ex);
+        }
+    }
+
+    private void populateTextViews() {
+        ((TextView) findViewById(R.id.entity_details_tagline)).setText(_movieDetails.tagline);
+        ((TextView) findViewById(R.id.entity_details_score)).setText(_movieDetails.voteScore);
+        ((TextView) findViewById(R.id.entity_details_votes)).setText(_movieDetails.voteCount);
+        ((TextView) findViewById(R.id.entity_details_releaseDate)).setText(_movieDetails.releaseDate);
+        ((TextView) findViewById(R.id.entity_details_runtime)).setText(_movieDetails.runtime);
+        ((TextView) findViewById(R.id.entity_details_status)).setText(_movieDetails.status);
+
+        StringBuilder sb = new StringBuilder();
+        for(String s: _movieDetails.genres) {
+            sb.append(s + " ");
+        }
+        ((TextView) findViewById(R.id.entity_details_tags)).setText(sb.toString());
+        ((TextView) findViewById(R.id.entity_details_description)).setText(_movieDetails.description);
+
+        ((TextView) findViewById(R.id.entity_details_budget)).setText(_movieDetails.budget);
+        ((TextView) findViewById(R.id.entity_details_revenue)).setText(_movieDetails.revenue);
     }
 
     private class RetrieveEntityDetailsTask extends AsyncTask<String, Void, String> {
@@ -80,6 +121,7 @@ public class EntityViewActivity extends AppCompatActivity {
             try {
                 _movieDetails = new Mapper().mapToMovieDetails(response);
                 _toolbarLayout.setTitle(_movieDetails.title);
+                populateTextViews();
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage(), ex);
             }

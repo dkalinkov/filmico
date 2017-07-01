@@ -41,6 +41,23 @@ public class Mapper {
         return moviesResult;
     }
 
+    public Movie mapToMovieEntity(String jsonInput) {
+        MovieDetails movieDetails = mapToMovieDetails(jsonInput);
+
+        Movie movie = new Movie();
+        movie.refId = movieDetails.refId;
+        movie.voteCount = movieDetails.voteCount;
+        movie.voteScore = movieDetails.voteScore;
+        movie.popularityIndex = movieDetails.popularityIndex;
+        movie.title = movieDetails.title;
+        movie.description = movieDetails.description;
+        movie.releaseDate = movieDetails.releaseDate;
+        movie.posterUrl = movieDetails.posterUrl;
+        movie.backdropUrl = movieDetails.backdropUrl;
+
+        return movie;
+    }
+
     public MovieDetails mapToMovieDetails(String jsonInput) {
         MovieDetails movie = new MovieDetails();
         try {
@@ -77,5 +94,4 @@ public class Mapper {
 
         return movie;
     }
-
 }

@@ -2,6 +2,7 @@ package com.ntropia.filmico.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -18,15 +19,19 @@ import android.widget.ProgressBar;
 
 import com.ntropia.filmico.R;
 import com.ntropia.filmico.fragments.EntityListFragment;
+import com.ntropia.filmico.fragments.LikedListFragment;
 import com.ntropia.filmico.models.Movie;
 import com.ntropia.filmico.utilities.ApiRequester;
 import com.ntropia.filmico.utilities.Mapper;
 import com.ntropia.filmico.utilities.UrlBulder;
 
+import java.util.Map;
+
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private EntityListFragment entityListFragmentFragment;
+    private LikedListFragment likedListFragment;
     private ProgressBar activityProgressBar;
     private final int animationDelay = 200;
 
@@ -72,6 +77,8 @@ public class NavigationActivity extends AppCompatActivity
             this.loadMoviesFragment(R.string.api_movies_popular);
         } else if (id == R.id.movies_top_rated) {
             this.loadMoviesFragment((R.string.api_movies_top_rated));
+        } else if (id == R.id.liked_list) {
+            this.loadLikedFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,6 +102,32 @@ public class NavigationActivity extends AppCompatActivity
                 null);
 
         new RetrieveEntitiesListTask().execute(url);
+    }
+
+    private void loadLikedFragment() {
+        LikedListFragment llf = LikedListFragment.newInstance();
+        startProgressBarAnimation();
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.landingScreenLayout, llf);
+        ft.commit();
+
+        likedListFragment = llf;
+
+        String spKey = getString(R.string.app_shared_pref_key);
+        final SharedPreferences sp = getBaseContext().getSharedPreferences(spKey, getBaseContext().MODE_PRIVATE);
+        Map<String, ?> spKeys = sp.getAll();
+
+        for (Map.Entry<String, ?> entry : spKeys.entrySet()) {
+            if (!entry.getKey().isEmpty()) {
+                String url = UrlBulder.generateUrlAddress(getString(R.string.api_url),
+                        getString(R.string.api_key),
+                        getString(R.string.api_movie),
+                        entry.getKey(), null, null);
+
+                new RetrieveEntityTask().execute(url);
+            }
+        }
     }
 
     private void startProgressBarAnimation() {
@@ -132,6 +165,25 @@ public class NavigationActivity extends AppCompatActivity
 
                     entityListFragmentFragment.getView().setAlpha(0f);
                     entityListFragmentFragment.getView().animate().alpha(1f).setDuration(animationDelay);
+                }
+            } catch (Exception ex) {
+                Log.d("Error", ex.getMessage(), ex);
+            }
+        }
+    }
+
+    private class RetrieveEntityTask extends AsyncTask<String, Void, String> {
+        protected String doInBackground(String... params) {
+            return new ApiRequester().get(params[0]);
+        }
+
+        protected void onPostExecute(String response) {
+            try {
+                Movie movie = new Mapper().mapToMovieEntity(response);
+
+                if (likedListFragment != null) {
+                    likedListFragment.addMovie(movie);
+                    stopProgressBarAnimation();
                 }
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage(), ex);

@@ -7,6 +7,11 @@
             android:icon="@drawable/ic_magnify"
             android:title="Search" />
 
+        <item
+            android:id="@+id/liked_list"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="Liked" />
+
         <item android:title="Movies">
             <menu>
                 <item
