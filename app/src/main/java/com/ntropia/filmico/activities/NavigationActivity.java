@@ -20,7 +20,7 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 
 import com.ntropia.filmico.R;
-import com.ntropia.filmico.fragments.LandingScreen;
+import com.ntropia.filmico.fragments.EntityListFragment;
 import com.ntropia.filmico.models.Movie;
 import com.ntropia.filmico.utilities.ApiRequester;
 import com.ntropia.filmico.utilities.Mapper;
@@ -29,7 +29,7 @@ import com.ntropia.filmico.utilities.UrlBulder;
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private LandingScreen landingScreenFragment;
+    private EntityListFragment entityListFragmentFragment;
     private ProgressBar activityProgressBar;
     private final int animationDelay = 200;
 
@@ -110,21 +110,21 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     private void loadPopularMoviesFragment() {
-        LandingScreen lsf = LandingScreen.newInstance();
+        EntityListFragment lsf = EntityListFragment.newInstance();
         startProgressBarAnimation();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.landingScreenLayout, lsf);
         ft.commit();
 
-        landingScreenFragment = lsf;
+        entityListFragmentFragment = lsf;
 
         String url = UrlBulder.generateUrlAddress(getString(R.string.api_url),
                 getString(R.string.api_key),
                 getString(R.string.api_movies_popular),
                 null);
 
-        new RetrieveMoviesTask().execute(url);
+        new RetrieveEntitiesListTask().execute(url);
     }
 
     private void startProgressBarAnimation() {
@@ -144,7 +144,7 @@ public class NavigationActivity extends AppCompatActivity
         });
     }
 
-    class RetrieveMoviesTask extends AsyncTask<String, Void, String> {
+    class RetrieveEntitiesListTask extends AsyncTask<String, Void, String> {
         protected String doInBackground(String... params) {
             return new ApiRequester().get(params[0]);
         }
@@ -153,15 +153,15 @@ public class NavigationActivity extends AppCompatActivity
             try {
                 Movie[] movies = new Mapper().mapToMovie(jsonMovies);
 
-                if (landingScreenFragment != null) {
+                if (entityListFragmentFragment != null) {
                     for (Movie m: movies) {
-                        landingScreenFragment.addMovie(m);
+                        entityListFragmentFragment.addMovie(m);
                     }
 
                     stopProgressBarAnimation();
 
-                    landingScreenFragment.getView().setAlpha(0f);
-                    landingScreenFragment.getView().animate().alpha(1f).setDuration(animationDelay);
+                    entityListFragmentFragment.getView().setAlpha(0f);
+                    entityListFragmentFragment.getView().animate().alpha(1f).setDuration(animationDelay);
                 }
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage(), ex);
