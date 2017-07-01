@@ -56,6 +56,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), EntityViewActivity.class);
                     intent.putExtra("entityRefId", movie.refId);
+                    intent.putExtra("entityBackdropImageUrl", movie.backdropUrl);
                     v.getContext().startActivity(intent);
                 }
             });
@@ -64,7 +65,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         return movieRowView;
     }
 
-    class RetrieveImageTask extends AsyncTask<ImageView, Void, Bitmap> {
+    private class RetrieveImageTask extends AsyncTask<ImageView, Void, Bitmap> {
         String imageTag;
         ImageView imageView = _movieImage;
 
@@ -77,8 +78,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         protected Bitmap doInBackground(ImageView... params) {
             imageView = params[0];
             String imageUrl = UrlBulder.generatePosterImageUrl(imageTag, true);
-            Bitmap image = new ApiRequester().getImage(imageUrl);
-            return image;
+            return new ApiRequester().getImage(imageUrl);
         }
 
         protected void onPostExecute(Bitmap response) {

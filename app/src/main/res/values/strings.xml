@@ -8,7 +8,8 @@
     <string name="api_movies_now_playing">movie/now_playing</string>
     <string name="api_movies_top_rated">movie/top_rated</string>
 
-    <string name="api_movies_credits">credits</string>
+    <string name="api_movie">movie</string>
+    <string name="api_movie_credits">credits</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

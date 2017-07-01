@@ -41,49 +41,41 @@ public class Mapper {
         return moviesResult;
     }
 
-    public MovieDetails[] mapToMovieDetails(String jsonInput) {
-        MovieDetails[] moviesResult = null;
+    public MovieDetails mapToMovieDetails(String jsonInput) {
+        MovieDetails movie = new MovieDetails();
         try {
             JSONObject json = new JSONObject(jsonInput);
-            JSONArray movies = json.getJSONArray("results");
-            moviesResult = new MovieDetails[movies.length()];
-            for (int i = 0; i < movies.length(); i++) {
-                MovieDetails movie = new MovieDetails();
-                JSONObject jObj = movies.optJSONObject(i);
 
-                movie.refId = jObj.getString("id");
-                movie.voteCount = jObj.getString("vote_count");
-                movie.voteScore = jObj.getString("vote_average");
-                movie.popularityIndex = jObj.getString("popularity");
+            movie.refId = json.getString("id");
+            movie.voteCount = json.getString("vote_count");
+            movie.voteScore = json.getString("vote_average");
+            movie.popularityIndex = json.getString("popularity");
 
-                movie.runtime = jObj.getString("runtime");
-                movie.budget = jObj.getString("budget");
-                movie.revenue = jObj.getString("revenue");
+            movie.runtime = json.getString("runtime");
+            movie.budget = json.getString("budget");
+            movie.revenue = json.getString("revenue");
 
-                movie.title = jObj.getString("title");
-                movie.description = jObj.getString("overview");
-                movie.releaseDate = jObj.getString("release_date");
-                movie.homepage = jObj.getString("homepage");
-                movie.tagline = jObj.getString("tagline");
-                movie.status = jObj.getString("status");
+            movie.title = json.getString("title");
+            movie.description = json.getString("overview");
+            movie.releaseDate = json.getString("release_date");
+            movie.homepage = json.getString("homepage");
+            movie.tagline = json.getString("tagline");
+            movie.status = json.getString("status");
 
-                JSONArray genres = jObj.getJSONArray("genres");
-                movie.genres = new String[genres.length()];
-                for (int j = 0; j < genres.length(); j++) {
-                    JSONObject genreObj = genres.optJSONObject(j);
-                    movie.genres[j] = genreObj.getString("name");
-                }
-
-                movie.posterUrl = jObj.getString("poster_path");
-                movie.backdropUrl = jObj.getString("backdrop_path");
-
-                moviesResult[i] = movie;
+            JSONArray genres = json.getJSONArray("genres");
+            movie.genres = new String[genres.length()];
+            for (int j = 0; j < genres.length(); j++) {
+                JSONObject genreObj = genres.optJSONObject(j);
+                movie.genres[j] = genreObj.getString("name");
             }
+
+            movie.posterUrl = json.getString("poster_path");
+            movie.backdropUrl = json.getString("backdrop_path");
         } catch (Exception ex) {
             Log.d("Parsing error", ex.getMessage(), ex);
         }
 
-        return moviesResult;
+        return movie;
     }
 
 }
