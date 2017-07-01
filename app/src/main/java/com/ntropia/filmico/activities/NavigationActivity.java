@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.ntropia.filmico.R;
 import com.ntropia.filmico.fragments.EntityListFragment;
 import com.ntropia.filmico.fragments.LikedListFragment;
+import com.ntropia.filmico.fragments.SearchFragment;
 import com.ntropia.filmico.models.Movie;
 import com.ntropia.filmico.utilities.ApiRequester;
 import com.ntropia.filmico.utilities.Mapper;
@@ -32,6 +33,7 @@ public class NavigationActivity extends AppCompatActivity
 
     private EntityListFragment entityListFragmentFragment;
     private LikedListFragment likedListFragment;
+    private SearchFragment searchFragment;
     private ProgressBar activityProgressBar;
     private final int animationDelay = 200;
 
@@ -79,11 +81,22 @@ public class NavigationActivity extends AppCompatActivity
             this.loadMoviesFragment((R.string.api_movies_top_rated));
         } else if (id == R.id.liked_list) {
             this.loadLikedFragment();
+        } else if (id == R.id.search_bar) {
+            this.loadSearchFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loadSearchFragment() {
+        SearchFragment sf = SearchFragment.newInstance();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.landingScreenLayout, sf);
+        ft.commit();
+
+        searchFragment = sf;
     }
 
     private void loadMoviesFragment(int actionId) {
@@ -98,8 +111,7 @@ public class NavigationActivity extends AppCompatActivity
 
         String url = UrlBulder.generateUrlAddress(getString(R.string.api_url),
                 getString(R.string.api_key),
-                getString(actionId),
-                null);
+                getString(actionId), null);
 
         new RetrieveEntitiesListTask().execute(url);
     }

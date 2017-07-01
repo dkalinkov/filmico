@@ -2,19 +2,20 @@ package com.ntropia.filmico.utilities;
 
 import android.support.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UrlBulder {
 
     @NonNull
-    public static String generateUrlAddress(String apiURL, String apiKey, String apiResource, Map<String, String> optionalParams) {
+    public static String generateUrlAddress(String apiURL, String apiKey, String apiResource, HashMap<String, String> optionalParams) {
         return generateUrlAddress(apiURL, apiKey, apiResource, null, null, optionalParams);
     }
 
     @NonNull
     public static String generateUrlAddress(String apiURL, String apiKey, String apiResource,
                                             String entityId, String additionalResource,
-                                            Map<String, String> optionalParams) {
+                                            HashMap<String, String> optionalParams) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(apiURL);
@@ -27,7 +28,7 @@ public class UrlBulder {
         sb.append("api_key=" + apiKey);
         if (optionalParams != null) {
             for (Map.Entry<String, String> entry : optionalParams.entrySet()) {
-                sb.append(entry.getKey() + "=" + entry.getValue());
+                sb.append("&" + entry.getKey() + "=" + entry.getValue());
             }
         }
 
